@@ -14,8 +14,8 @@ class Constants:
 
     NUM_OF_FRIENDLY = 4
 
-    ROW_COUNT = 1
-    COLUMN_COUNT = 1
+    ROW_COUNT = 4
+    COLUMN_COUNT = 9
 class EggValues:
     FRIENDLY = 0
     ENEMY = 1
