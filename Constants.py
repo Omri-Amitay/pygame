@@ -2,11 +2,12 @@ class Constants:
     SCREEN_WIDTH = 1000
     SCREEN_HEIGHT = 800
 
-    BULLET_SPEED = 0.5
+    BULLET_SPEED = 10
     BULLET_SIZE = 50
+    BULLET_SPIN_SPEED = 3
 
 
-    PLAYER_SPEED = 0.3
+    PLAYER_SPEED = 5
     PLAYER_SIZE = 80
 
     EGG_SIZE = 60
@@ -14,9 +15,9 @@ class Constants:
 
     NUM_OF_FRIENDLY = 4
 
-    ROW_COUNT = 4
-    COLUMN_COUNT = 9
+    ROW_COUNT = 3
+    COLUMN_COUNT = 8
 class EggValues:
-    FRIENDLY = 0
+    FRIENDLY = -3
     ENEMY = 1
-    DEAD = 2
+    DEAD = 0

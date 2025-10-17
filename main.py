@@ -1,15 +1,41 @@
+import random
+
 import pygame
 from Player import Player
 from Constants import Constants
 from Constants import EggValues
 from Egg import Egg
+
 import time
 pygame.init()
 screen = pygame.display.set_mode((Constants.SCREEN_WIDTH,Constants.SCREEN_HEIGHT))
 player = Player(screen)
 
 map = []
+
+
+def pickRandom(rangeOfNumbers, numberOfRandoms, canHaveMultiple):
+    randomArr = []
+    for i in range(numberOfRandoms):
+        randomNum = random.randint(0, rangeOfNumbers)
+        while (randomNum in randomArr) and (not canHaveMultiple):
+
+            randomNum = random.randint(0, rangeOfNumbers)
+
+        randomArr.append(randomNum)
+    return randomArr
+
+
+shoot_sound = None
+def initSound():
+    pygame.mixer.init()
+    global shoot_sound
+    shoot_sound = pygame.mixer.Sound("assets/shoot.mp3")
+    shoot_sound.set_volume(0.5)
+
+
 def initMap():
+    pygame.display.set_caption("Space Chicken Defenders 🐔")
     verticleSpacing = Constants.SCREEN_HEIGHT / (Constants.COLUMN_COUNT + 1)
     for r in range(Constants.ROW_COUNT): # num of rows
         currentRow = []
@@ -19,19 +45,60 @@ def initMap():
             currentRow.append(Egg((x , y), screen, EggValues.ENEMY))
 
         map.append(currentRow)
-def refreshAll():
+    friendlyRows = pickRandom(Constants.ROW_COUNT - 1, Constants.NUM_OF_FRIENDLY, True) # can have multiple because on the same row they can be multiple
+    friendlyColumns = pickRandom(Constants.COLUMN_COUNT - 1, Constants.NUM_OF_FRIENDLY, False) # I don't want 2 friendlys on eachother
 
+    for i,v in enumerate(friendlyRows):
+
+        map[v][friendlyColumns[i]].changeEggLevel(EggValues.FRIENDLY)
+
+score = 0
+def changeScore(scoreAddition):
+    global score
+    score = score + scoreAddition
+
+def writeText(text, color, position, centerOrigin):
+
+    text = font.render(text,True,color)
+    if centerOrigin:
+        text_rect = text.get_rect()
+        text_rect.center = (position)
+        screen.blit(text, text_rect)
+    else:
+        screen.blit(text, position)
+
+font = pygame.font.SysFont("Arial",30,  bold=True )
+def refreshScoreboard():
+    writeText("Score: " + str(score), (0,0,0), (0,0), False)
+
+
+def refreshAll():
+    refreshScoreboard()
     player.refresh()
 
     for _,row in enumerate(map): #refresh all eggs
         for _,egg in enumerate(row):
-            egg.refresh()
+            changeScore(egg.refresh())
+
+
+def isGameOver(): #check if all enemys are dead
+
+    for r in range(len(map)):
+        for c,egg in enumerate(map[r]):
+            if egg._eggLevel == EggValues.ENEMY:
+                return False
+    return True
 
 
 running = True
 initMap()
+initSound()
 
+
+clock = pygame.time.Clock()
 while running:
+
+
 
     keys = pygame.key.get_pressed()
 
@@ -47,10 +114,27 @@ while running:
             running = False
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RIGHT:
-                player.shoot()
-
+                if keys[pygame.K_w]:
+                    player.shoot(1)
+                elif keys[pygame.K_s]:
+                    player.shoot(-1)
+                else:
+                    player.shoot(0)
+                shoot_sound.play()
+                # player.shoot(1)
+                #how to check here if im holding down w or s?
 
 
     screen.fill((100,255,100))
     refreshAll()
+    if isGameOver() == True:
+        writeText("Game Over!", (0, 0, 0), (Constants.SCREEN_WIDTH / 2, Constants.SCREEN_HEIGHT / 2), True)
+        writeText("Final Score: " + str(score), (0,0,0), (Constants.SCREEN_WIDTH / 2, Constants.SCREEN_HEIGHT / 2 + 30), True)
+
+
+
+
     pygame.display.update()
+
+    clock.tick(60)
+

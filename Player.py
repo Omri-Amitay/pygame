@@ -41,8 +41,8 @@ class Player:
 
     def getBulletArr(self):
         return self._activeBullets
-    def shoot(self):
-        self._activeBullets.append(Bullet((self._posX, self._posY),self._screen))
+    def shoot(self, spinDirection):
+        self._activeBullets.append(Bullet((self._posX, self._posY),self._screen,spinDirection))
         print("shoot")
 
     def refresh(self):
