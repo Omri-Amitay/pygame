@@ -1,6 +1,6 @@
 class Constants:
     SCREEN_WIDTH = 1000
-    SCREEN_HEIGHT = 800
+    SCREEN_HEIGHT = 600
 
     BULLET_SPEED = 10
     BULLET_SIZE = 50
@@ -17,6 +17,8 @@ class Constants:
 
     ROW_COUNT = 3
     COLUMN_COUNT = 8
+
+    TEXT_SIZE = 30
 class EggValues:
     FRIENDLY = -3
     ENEMY = 1

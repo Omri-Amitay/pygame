@@ -40,7 +40,7 @@ def initMap():
     for r in range(Constants.ROW_COUNT): # num of rows
         currentRow = []
         for c in range(Constants.COLUMN_COUNT):
-            x = r * 100 + 300
+            x = Constants.SCREEN_WIDTH - (r + 1) * 100
             y =  (c + 1) * verticleSpacing - Constants.EGG_SIZE/2 #evenly space the eggs out
             currentRow.append(Egg((x , y), screen, EggValues.ENEMY))
 
@@ -67,13 +67,21 @@ def writeText(text, color, position, centerOrigin):
     else:
         screen.blit(text, position)
 
-font = pygame.font.SysFont("Arial",30,  bold=True )
+font = pygame.font.SysFont("Arial",Constants.TEXT_SIZE,  bold=True )
 def refreshScoreboard():
     writeText("Score: " + str(score), (0,0,0), (0,0), False)
 
+def refreshGameInstructions():
+    gameInstructions = "How to Play: \nW/S curveBullet \nUP/DOWN arrow keys to move \nshoot enemy eggs to earn points \nfriendly eggs shot lower score"
+    lines = gameInstructions.split("\n")
+    offset = Constants.SCREEN_HEIGHT - len(lines) * Constants.TEXT_SIZE
+    for line in lines:
+        writeText(line, (0,0,0), (0,offset), False)
+        offset += Constants.TEXT_SIZE
 
 def refreshAll():
     refreshScoreboard()
+    refreshGameInstructions()
     player.refresh()
 
     for _,row in enumerate(map): #refresh all eggs
